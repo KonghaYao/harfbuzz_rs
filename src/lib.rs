@@ -89,6 +89,7 @@ pub mod draw_funcs;
 mod face;
 mod font;
 pub mod font_funcs;
+mod utils;
 
 #[cfg(feature = "rusttype")]
 pub mod rusttype;

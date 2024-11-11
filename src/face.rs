@@ -5,14 +5,14 @@ use std::marker::PhantomData;
 use std::path::Path;
 
 use crate::bindings::{
-    hb_blob_t, hb_face_create, hb_face_create_for_tables, hb_face_destroy, hb_face_get_empty,
-    hb_face_get_glyph_count, hb_face_get_index, hb_face_get_upem, hb_face_reference,
-    hb_face_reference_blob, hb_face_reference_table, hb_face_set_glyph_count, hb_face_set_upem,
-    hb_face_t, hb_tag_t,
+    hb_blob_t, hb_face_collect_unicodes, hb_face_create, hb_face_create_for_tables,
+    hb_face_destroy, hb_face_get_empty, hb_face_get_glyph_count, hb_face_get_index,
+    hb_face_get_upem, hb_face_reference, hb_face_reference_blob, hb_face_reference_table,
+    hb_face_set_glyph_count, hb_face_set_upem, hb_face_t, hb_set_create, hb_tag_t,
 };
 use crate::blob::Blob;
 use crate::common::{HarfbuzzObject, Owned, Shared, Tag};
-
+use crate::utils::u32_array_from_hb_set;
 /// A wrapper around `hb_face_t`.
 ///
 /// An excerpt from harfbuzz documentation:
@@ -141,6 +141,13 @@ impl<'a> Face<'a> {
     pub fn glyph_count(&self) -> u32 {
         unsafe { hb_face_get_glyph_count(self.as_raw()) }
     }
+    pub fn collect_unicodes(&self) -> Vec<u32> {
+        unsafe {
+            let unicode_set = hb_set_create();
+            hb_face_collect_unicodes(self.as_raw(), unicode_set);
+            u32_array_from_hb_set(unicode_set)
+        }
+    }
 
     #[cfg(variation_support)]
     pub fn get_variation_axis_infos(&self) -> Vec<VariationAxisInfo> {
@@ -201,5 +208,18 @@ mod tests {
 
         let maxp_table = face.table_with_tag(b"hhea").unwrap();
         assert_eq!(&maxp_table.as_ref(), b"hhea-table");
+    }
+    #[test]
+    fn test_face_collect_unicodes() {
+        let path = "testfiles/SourceSansVariable-Roman.ttf";
+        let face = Face::from_file(path, 0).unwrap();
+
+        let unicodes = face.collect_unicodes();
+        assert_eq!(unicodes.len(), 1298);
+        let initial_sequence = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43];
+
+        for (i, &item) in initial_sequence.iter().enumerate() {
+            assert_eq!(unicodes[i], item);
+        }
     }
 }
