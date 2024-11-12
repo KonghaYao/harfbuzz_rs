@@ -95,7 +95,6 @@ mod utils;
 #[cfg(feature = "rusttype")]
 pub mod rusttype;
 
-#[cfg(feature = "subset")]
 pub mod subset;
 
 use bindings::hb_feature_t;
