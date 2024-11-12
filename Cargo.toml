@@ -15,6 +15,12 @@ categories = [
 license = "MIT"
 edition = "2018"
 links = "harfbuzz"
+include = [
+    "src/*",
+    "harfbuzz/src/*",
+    "harfbuzz-output.cc",
+    "build.rs",
+]
 
 [badges]
 maintainence = { status = "passively-maintained" }
