@@ -1,4 +1,4 @@
-#include "hb-glyph-to-svg.h"
+#include "hb-glyph-to-svg-path.h"
 #include "hb-common.h"
 #include "hb-draw.h"
 #include "string.h"
@@ -112,7 +112,7 @@ static hb_draw_funcs_t *funcs = 0;
 
 extern "C"
 {
-  int hb_glyph_to_svg(hb_font_t *font, hb_codepoint_t glyph, char *buf, unsigned buf_size)
+  int hb_glyph_to_svg_path(hb_font_t *font, hb_codepoint_t glyph, char *buf, unsigned buf_size)
   {
     if (funcs == 0) /* not the best pattern for multi-threaded apps which is not a concern here */
     {

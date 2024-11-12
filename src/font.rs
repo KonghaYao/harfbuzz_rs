@@ -10,7 +10,7 @@ use crate::bindings::{
     hb_font_get_glyph_v_origin, hb_font_get_h_extents, hb_font_get_nominal_glyph,
     hb_font_get_parent, hb_font_get_ppem, hb_font_get_scale, hb_font_get_v_extents,
     hb_font_get_variation_glyph, hb_font_reference, hb_font_set_funcs, hb_font_set_ppem,
-    hb_font_set_scale, hb_font_set_variations, hb_font_t, hb_glyph_extents_t, hb_glyph_to_svg,
+    hb_font_set_scale, hb_font_set_variations, hb_font_t, hb_glyph_extents_t, hb_glyph_to_svg_path,
     hb_position_t,
 };
 use crate::common::{HarfbuzzObject, Owned, Shared};
@@ -503,7 +503,7 @@ impl<'a> Font<'a> {
         const PATH_BUFFER_SIZE: u32 = 65536; // should be enough for most glyphs
         let mut path_buffer = vec![0_i8; PATH_BUFFER_SIZE as usize];
         unsafe {
-            hb_glyph_to_svg(
+            hb_glyph_to_svg_path(
                 self.as_raw_mut(),
                 glyph,
                 path_buffer.as_mut_ptr(),
