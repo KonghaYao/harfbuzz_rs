@@ -53,6 +53,10 @@ impl<'a> Face<'a> {
         Ok(Face::new(blob, index))
     }
 
+    pub fn from_ptr(raw: *mut hb_face_t) -> Owned<Face<'static>> {
+        unsafe { Owned::from_raw(raw) }
+    }
+
     /// Create a face from the bytes of a given slice and an index specifying
     /// which font to read from an OpenType font collection.
     pub fn from_bytes(bytes: &[u8], index: u32) -> Owned<Face<'_>> {

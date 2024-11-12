@@ -21,7 +21,7 @@ fn main() {
         .flag("-std=c++11")
         .warnings(false)
         .include("harfbuzz/src")
-        .file("harfbuzz/src/harfbuzz.cc");
+        .file("harfbuzz-output.cc");
 
     if !target.contains("windows") {
         cfg.define("HAVE_PTHREAD", "1");

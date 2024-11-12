@@ -5099,3 +5099,184 @@ extern "C" {
 extern "C" {
     pub fn hb_aat_layout_has_tracking(face: *mut hb_face_t) -> hb_bool_t;
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct hb_subset_input_t {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct hb_subset_plan_t {
+    _unused: [u8; 0],
+}
+pub const HB_SUBSET_FLAGS_DEFAULT: hb_subset_flags_t = 0;
+pub const HB_SUBSET_FLAGS_NO_HINTING: hb_subset_flags_t = 1;
+pub const HB_SUBSET_FLAGS_RETAIN_GIDS: hb_subset_flags_t = 2;
+pub const HB_SUBSET_FLAGS_DESUBROUTINIZE: hb_subset_flags_t = 4;
+pub const HB_SUBSET_FLAGS_NAME_LEGACY: hb_subset_flags_t = 8;
+pub const HB_SUBSET_FLAGS_SET_OVERLAPS_FLAG: hb_subset_flags_t = 16;
+pub const HB_SUBSET_FLAGS_PASSTHROUGH_UNRECOGNIZED: hb_subset_flags_t = 32;
+pub const HB_SUBSET_FLAGS_NOTDEF_OUTLINE: hb_subset_flags_t = 64;
+pub const HB_SUBSET_FLAGS_GLYPH_NAMES: hb_subset_flags_t = 128;
+pub const HB_SUBSET_FLAGS_NO_PRUNE_UNICODE_RANGES: hb_subset_flags_t = 256;
+pub const HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE: hb_subset_flags_t = 512;
+pub const HB_SUBSET_FLAGS_OPTIMIZE_IUP_DELTAS: hb_subset_flags_t = 1024;
+#[doc = " hb_subset_flags_t:\n @HB_SUBSET_FLAGS_DEFAULT: all flags at their default value of false.\n @HB_SUBSET_FLAGS_NO_HINTING: If set hinting instructions will be dropped in\n the produced subset. Otherwise hinting instructions will be retained.\n @HB_SUBSET_FLAGS_RETAIN_GIDS: If set glyph indices will not be modified in\n the produced subset. If glyphs are dropped their indices will be retained\n as an empty glyph.\n @HB_SUBSET_FLAGS_DESUBROUTINIZE: If set and subsetting a CFF font the\n subsetter will attempt to remove subroutines from the CFF glyphs.\n @HB_SUBSET_FLAGS_NAME_LEGACY: If set non-unicode name records will be\n retained in the subset.\n @HB_SUBSET_FLAGS_SET_OVERLAPS_FLAG:\tIf set the subsetter will set the\n OVERLAP_SIMPLE flag on each simple glyph.\n @HB_SUBSET_FLAGS_PASSTHROUGH_UNRECOGNIZED: If set the subsetter will not\n drop unrecognized tables and instead pass them through untouched.\n @HB_SUBSET_FLAGS_NOTDEF_OUTLINE: If set the notdef glyph outline will be\n retained in the final subset.\n @HB_SUBSET_FLAGS_GLYPH_NAMES: If set the PS glyph names will be retained\n in the final subset.\n @HB_SUBSET_FLAGS_NO_PRUNE_UNICODE_RANGES: If set then the unicode ranges in\n OS/2 will not be recalculated.\n @HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE: If set don't perform glyph closure on layout\n substitution rules (GSUB). Since: 7.2.0.\n @HB_SUBSET_FLAGS_OPTIMIZE_IUP_DELTAS: If set perform IUP delta optimization on the\n remaining gvar table's deltas. Since: 8.5.0\n @HB_SUBSET_FLAGS_IFTB_REQUIREMENTS: If set enforce requirements on the output subset\n to allow it to be used with incremental font transfer IFTB patches. Primarily,\n this forces all outline data to use long (32 bit) offsets. Since: EXPERIMENTAL\n\n List of boolean properties that can be configured on the subset input.\n\n Since: 2.9.0"]
+pub type hb_subset_flags_t = ::std::os::raw::c_uint;
+pub const HB_SUBSET_SETS_GLYPH_INDEX: hb_subset_sets_t = 0;
+pub const HB_SUBSET_SETS_UNICODE: hb_subset_sets_t = 1;
+pub const HB_SUBSET_SETS_NO_SUBSET_TABLE_TAG: hb_subset_sets_t = 2;
+pub const HB_SUBSET_SETS_DROP_TABLE_TAG: hb_subset_sets_t = 3;
+pub const HB_SUBSET_SETS_NAME_ID: hb_subset_sets_t = 4;
+pub const HB_SUBSET_SETS_NAME_LANG_ID: hb_subset_sets_t = 5;
+pub const HB_SUBSET_SETS_LAYOUT_FEATURE_TAG: hb_subset_sets_t = 6;
+pub const HB_SUBSET_SETS_LAYOUT_SCRIPT_TAG: hb_subset_sets_t = 7;
+#[doc = " hb_subset_sets_t:\n @HB_SUBSET_SETS_GLYPH_INDEX: the set of glyph indexes to retain in the subset.\n @HB_SUBSET_SETS_UNICODE: the set of unicode codepoints to retain in the subset.\n @HB_SUBSET_SETS_NO_SUBSET_TABLE_TAG: the set of table tags which specifies tables that should not be\n subsetted.\n @HB_SUBSET_SETS_DROP_TABLE_TAG: the set of table tags which specifies tables which will be dropped\n in the subset.\n @HB_SUBSET_SETS_NAME_ID: the set of name ids that will be retained.\n @HB_SUBSET_SETS_NAME_LANG_ID: the set of name lang ids that will be retained.\n @HB_SUBSET_SETS_LAYOUT_FEATURE_TAG: the set of layout feature tags that will be retained\n in the subset.\n @HB_SUBSET_SETS_LAYOUT_SCRIPT_TAG: the set of layout script tags that will be retained\n in the subset. Defaults to all tags. Since: 5.0.0\n\n List of sets that can be configured on the subset input.\n\n Since: 2.9.1"]
+pub type hb_subset_sets_t = ::std::os::raw::c_uint;
+extern "C" {
+    pub fn hb_subset_input_create_or_fail() -> *mut hb_subset_input_t;
+}
+extern "C" {
+    pub fn hb_subset_input_reference(input: *mut hb_subset_input_t) -> *mut hb_subset_input_t;
+}
+extern "C" {
+    pub fn hb_subset_input_destroy(input: *mut hb_subset_input_t);
+}
+extern "C" {
+    pub fn hb_subset_input_set_user_data(
+        input: *mut hb_subset_input_t,
+        key: *mut hb_user_data_key_t,
+        data: *mut ::std::os::raw::c_void,
+        destroy: hb_destroy_func_t,
+        replace: hb_bool_t,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_input_get_user_data(
+        input: *const hb_subset_input_t,
+        key: *mut hb_user_data_key_t,
+    ) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn hb_subset_input_keep_everything(input: *mut hb_subset_input_t);
+}
+extern "C" {
+    pub fn hb_subset_input_unicode_set(input: *mut hb_subset_input_t) -> *mut hb_set_t;
+}
+extern "C" {
+    pub fn hb_subset_input_glyph_set(input: *mut hb_subset_input_t) -> *mut hb_set_t;
+}
+extern "C" {
+    pub fn hb_subset_input_set(
+        input: *mut hb_subset_input_t,
+        set_type: hb_subset_sets_t,
+    ) -> *mut hb_set_t;
+}
+extern "C" {
+    pub fn hb_subset_input_old_to_new_glyph_mapping(input: *mut hb_subset_input_t)
+        -> *mut hb_map_t;
+}
+extern "C" {
+    pub fn hb_subset_input_get_flags(input: *mut hb_subset_input_t) -> hb_subset_flags_t;
+}
+extern "C" {
+    pub fn hb_subset_input_set_flags(input: *mut hb_subset_input_t, value: ::std::os::raw::c_uint);
+}
+extern "C" {
+    pub fn hb_subset_input_pin_all_axes_to_default(
+        input: *mut hb_subset_input_t,
+        face: *mut hb_face_t,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_input_pin_axis_to_default(
+        input: *mut hb_subset_input_t,
+        face: *mut hb_face_t,
+        axis_tag: hb_tag_t,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_input_pin_axis_location(
+        input: *mut hb_subset_input_t,
+        face: *mut hb_face_t,
+        axis_tag: hb_tag_t,
+        axis_value: f32,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_input_get_axis_range(
+        input: *mut hb_subset_input_t,
+        axis_tag: hb_tag_t,
+        axis_min_value: *mut f32,
+        axis_max_value: *mut f32,
+        axis_def_value: *mut f32,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_input_set_axis_range(
+        input: *mut hb_subset_input_t,
+        face: *mut hb_face_t,
+        axis_tag: hb_tag_t,
+        axis_min_value: f32,
+        axis_max_value: f32,
+        axis_def_value: f32,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_preprocess(source: *mut hb_face_t) -> *mut hb_face_t;
+}
+extern "C" {
+    pub fn hb_subset_or_fail(
+        source: *mut hb_face_t,
+        input: *const hb_subset_input_t,
+    ) -> *mut hb_face_t;
+}
+extern "C" {
+    pub fn hb_subset_plan_execute_or_fail(plan: *mut hb_subset_plan_t) -> *mut hb_face_t;
+}
+extern "C" {
+    pub fn hb_subset_plan_create_or_fail(
+        face: *mut hb_face_t,
+        input: *const hb_subset_input_t,
+    ) -> *mut hb_subset_plan_t;
+}
+extern "C" {
+    pub fn hb_subset_plan_destroy(plan: *mut hb_subset_plan_t);
+}
+extern "C" {
+    pub fn hb_subset_plan_old_to_new_glyph_mapping(plan: *const hb_subset_plan_t) -> *mut hb_map_t;
+}
+extern "C" {
+    pub fn hb_subset_plan_new_to_old_glyph_mapping(plan: *const hb_subset_plan_t) -> *mut hb_map_t;
+}
+extern "C" {
+    pub fn hb_subset_plan_unicode_to_old_glyph_mapping(
+        plan: *const hb_subset_plan_t,
+    ) -> *mut hb_map_t;
+}
+extern "C" {
+    pub fn hb_subset_plan_reference(plan: *mut hb_subset_plan_t) -> *mut hb_subset_plan_t;
+}
+extern "C" {
+    pub fn hb_subset_plan_set_user_data(
+        plan: *mut hb_subset_plan_t,
+        key: *mut hb_user_data_key_t,
+        data: *mut ::std::os::raw::c_void,
+        destroy: hb_destroy_func_t,
+        replace: hb_bool_t,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_plan_get_user_data(
+        plan: *const hb_subset_plan_t,
+        key: *mut hb_user_data_key_t,
+    ) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn hb_glyph_to_svg(
+        font: *mut hb_font_t,
+        glyph: hb_codepoint_t,
+        buf: *mut ::std::os::raw::c_char,
+        buf_size: ::std::os::raw::c_uint,
+    ) -> ::std::os::raw::c_int;
+}

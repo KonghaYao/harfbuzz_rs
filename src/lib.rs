@@ -91,8 +91,12 @@ mod font;
 pub mod font_funcs;
 mod utils;
 
+
 #[cfg(feature = "rusttype")]
 pub mod rusttype;
+
+#[cfg(feature = "subset")]
+pub mod subset;
 
 use bindings::hb_feature_t;
 use bindings::hb_shape;
