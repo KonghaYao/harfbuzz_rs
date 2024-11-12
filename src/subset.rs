@@ -5,7 +5,7 @@ use crate::bindings::{
     HB_SUBSET_SETS_LAYOUT_FEATURE_TAG, HB_SUBSET_SETS_LAYOUT_SCRIPT_TAG,
 };
 use crate::common::{HarfbuzzObject, Owned};
-use crate::Face;
+use crate::{Face};
 use std::marker::PhantomData;
 use std::ptr::NonNull;
 

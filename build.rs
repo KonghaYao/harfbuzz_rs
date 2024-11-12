@@ -21,6 +21,7 @@ fn main() {
         .flag("-std=c++11")
         .warnings(false)
         .include("harfbuzz/src")
+        .include("src/subset")
         .file("harfbuzz-output.cc");
 
     if !target.contains("windows") {
