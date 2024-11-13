@@ -5273,7 +5273,7 @@ extern "C" {
     ) -> *mut ::std::os::raw::c_void;
 }
 extern "C" {
-    pub fn hb_glyph_to_svg(
+    pub fn hb_glyph_to_svg_path(
         font: *mut hb_font_t,
         glyph: hb_codepoint_t,
         buf: *mut ::std::os::raw::c_char,

@@ -10,7 +10,8 @@ use crate::bindings::{
     hb_font_get_glyph_v_origin, hb_font_get_h_extents, hb_font_get_nominal_glyph,
     hb_font_get_parent, hb_font_get_ppem, hb_font_get_scale, hb_font_get_v_extents,
     hb_font_get_variation_glyph, hb_font_reference, hb_font_set_funcs, hb_font_set_ppem,
-    hb_font_set_scale, hb_font_set_variations, hb_font_t, hb_glyph_extents_t, hb_position_t,
+    hb_font_set_scale, hb_font_set_variations, hb_font_t, hb_glyph_extents_t,
+    hb_position_t,
 };
 use crate::common::{HarfbuzzObject, Owned, Shared};
 pub use crate::draw_funcs::DrawFuncs;
@@ -18,7 +19,7 @@ use crate::draw_funcs::DrawFuncsImpl;
 use crate::face::Face;
 pub use crate::font_funcs::FontFuncs;
 use crate::font_funcs::FontFuncsImpl;
-use crate::Variation;
+use crate::{Variation};
 
 use std::ffi::CStr;
 use std::marker::PhantomData;
@@ -499,6 +500,7 @@ impl<'a> Font<'a> {
     }
 }
 
+
 unsafe impl<'a> Send for Font<'a> {}
 unsafe impl<'a> Sync for Font<'a> {}
 
@@ -546,4 +548,5 @@ mod test {
     fn test_font_extents_layout() {
         assert_memory_layout_equal::<FontExtents, hb_font_extents_t>()
     }
+
 }

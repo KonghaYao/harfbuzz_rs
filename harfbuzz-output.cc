@@ -71,4 +71,4 @@
 #include "hb-wasm-api.cc"
 #include "hb-wasm-shape.cc"
 
-#include "src/subset/hb-glyph-to-svg.cc"
+#include "hb-glyph-to-svg-path.cc"
