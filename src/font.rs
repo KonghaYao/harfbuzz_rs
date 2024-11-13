@@ -3,14 +3,14 @@ use std::ptr::NonNull;
 use std::os::raw::c_void;
 
 use crate::bindings::{
-    hb_codepoint_t, hb_font_create, hb_font_create_sub_font, hb_font_destroy, hb_font_draw_glyph,
+    hb_font_create, hb_font_create_sub_font, hb_font_destroy, hb_font_draw_glyph,
     hb_font_extents_t, hb_font_get_empty, hb_font_get_face, hb_font_get_glyph_contour_point,
     hb_font_get_glyph_extents, hb_font_get_glyph_from_name, hb_font_get_glyph_h_advance,
     hb_font_get_glyph_h_origin, hb_font_get_glyph_name, hb_font_get_glyph_v_advance,
     hb_font_get_glyph_v_origin, hb_font_get_h_extents, hb_font_get_nominal_glyph,
     hb_font_get_parent, hb_font_get_ppem, hb_font_get_scale, hb_font_get_v_extents,
     hb_font_get_variation_glyph, hb_font_reference, hb_font_set_funcs, hb_font_set_ppem,
-    hb_font_set_scale, hb_font_set_variations, hb_font_t, hb_glyph_extents_t, hb_glyph_to_svg_path,
+    hb_font_set_scale, hb_font_set_variations, hb_font_t, hb_glyph_extents_t,
     hb_position_t,
 };
 use crate::common::{HarfbuzzObject, Owned, Shared};
@@ -19,7 +19,7 @@ use crate::draw_funcs::DrawFuncsImpl;
 use crate::face::Face;
 pub use crate::font_funcs::FontFuncs;
 use crate::font_funcs::FontFuncsImpl;
-use crate::Variation;
+use crate::{Variation};
 
 use std::ffi::CStr;
 use std::marker::PhantomData;
@@ -498,23 +498,8 @@ impl<'a> Font<'a> {
             )
         };
     }
-
-    pub fn glyph_to_svg_path(&mut self, glyph: hb_codepoint_t) -> String {
-        const PATH_BUFFER_SIZE: u32 = 65536; // should be enough for most glyphs
-        let mut path_buffer = vec![0_i8; PATH_BUFFER_SIZE as usize];
-        unsafe {
-            hb_glyph_to_svg_path(
-                self.as_raw_mut(),
-                glyph,
-                path_buffer.as_mut_ptr(),
-                PATH_BUFFER_SIZE,
-            );
-        }
-        let end_pos = path_buffer.iter().position(|&x| x == 0).unwrap();
-        let u8_array: Vec<u8> = path_buffer[..end_pos].iter().map(|&x| x as u8).collect();
-        String::from_utf8(u8_array).unwrap()
-    }
 }
+
 
 unsafe impl<'a> Send for Font<'a> {}
 unsafe impl<'a> Sync for Font<'a> {}
@@ -564,14 +549,4 @@ mod test {
         assert_memory_layout_equal::<FontExtents, hb_font_extents_t>()
     }
 
-    #[test]
-    fn test_glyph_to_svg() {
-        let path = "testfiles/SourceSansVariable-Roman.ttf";
-        let face = Face::from_file(path, 0).unwrap();
-        let mut font = Font::new(face);
-        let graph_str = font.glyph_to_svg_path(b'h' as u32);
-        assert_eq!(
-            graph_str,
-            "M100,0L100,660L454,660L454,632L132,632L132,366L402,366L402,338L132,338L132,28L464,28L464,0L100,0ZM185,710L171,726L267,808L295,808L391,726L377,710L283,778L279,778L185,710ZM143,844Q144,860 149.5,877.5Q155,895 169.5,907.5Q184,920 211,920Q237,920 255.5,912Q274,904 289,893Q304,882 318.5,874Q333,866 353,866Q374,866 383,880.5Q392,895 395,918L419,916Q418,900 412.5,882.5Q407,865 392.5,852.5Q378,840 351,840Q325,840 306.5,848Q288,856 273,867Q258,878 243.5,886Q229,894 209,894Q188,894 179,879.5Q170,865 167,842L143,844Z")
-    }
 }

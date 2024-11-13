@@ -96,6 +96,7 @@ mod utils;
 pub mod rusttype;
 
 pub mod subset;
+pub mod svg;
 
 use bindings::hb_feature_t;
 use bindings::hb_shape;
