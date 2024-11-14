@@ -29,7 +29,24 @@ use harfbuzz_rs_now::*;
 fn main() {
     let path = "./src/SourceSansVariable-Roman.ttf";
     let index = 0; //< face index in the font file
-    let face = Face::from_file(path, index).unwrap();
+    let mut face = Face::from_file(path, index).unwrap();
+
+    // create a font subset
+    let font_subset = subset::Subset::new();
+
+    let chars: [u32; 3] = [32, 33, 34];
+    font_subset.add_chars(&chars);
+
+    // Preserve all OpenType tables (like glyf, cmap, etc.) for full font functionality
+    font_subset.clear_drop_table();
+    // Maintain all OpenType layout features (like ligatures, kerning) and script support
+    font_subset.adjust_layout();
+
+    let new_font_face = font_subset.run_subset(&face);
+    let shared_data = new_font_face.face_data();
+    let binary_data_of_subset = shared_data.get_data();
+    std::fs::write("subset.ttf", binary_data_of_subset).expect("Failed to write font subset");
+
     let mut font = Font::new(face);
 
     let buffer = UnicodeBuffer::new().add_str("Hello World!");
@@ -58,16 +75,7 @@ fn main() {
 
     // render a simple string to svg!
     let svg_string = font.render_svg_text("Hello World\nI can see you", &[]);
-    
-
-    // create a font subset     
-    let font_subset = subset::Subset::new();
-    font_subset.clear_drop_table(); // I want to keep all table inside this font
-    font_subset.adjust_layout(); // I want to keep all feature and script layout
-
-    let new_font_face = font_subset.run_subset(&face);
-    let binary_data_of_subset = new_font_face.face_data().get_data();
-
+    println!("{}", svg_string);
 }
 ```
 
