@@ -1,5 +1,5 @@
 [package]
-name = "harfbuzz_rs"
+name = "harfbuzz_rs_now"
 version = "2.2.1"
 authors = ["Manuel Reinhardt <manuel.rhdt@gmail.com>"]
 description = "A high-level interface to HarfBuzz, exposing its most important functionality in a safe manner using Rust."
@@ -36,3 +36,6 @@ bitflags = "^1"
 [build-dependencies]
 cc = "1.0"
 pkg-config = "0.3.24"
+
+[lib]
+doctest = false
