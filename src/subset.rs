@@ -65,7 +65,7 @@ impl<'a> Subset<'a> {
         }
     }
 
-    pub fn run_subset(&self, face: Owned<Face<'_>>) -> Owned<Face<'_>> {
+    pub fn run_subset(&self, face: &Owned<Face<'_>>) -> Owned<Face<'_>> {
         let result_ptr = unsafe { hb_subset_or_fail(face.as_raw(), self.raw.as_ptr()) };
         let face = Face::from_ptr(result_ptr);
         face
@@ -115,7 +115,7 @@ mod test {
         subset.clear_drop_table();
         subset.adjust_layout();
 
-        let result_face = subset.run_subset(face);
+        let result_face = subset.run_subset(&face);
 
         // match unicode length
         let unicodes = result_face.collect_unicodes();
