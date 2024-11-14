@@ -51,6 +51,9 @@ impl<'a> Subset<'a> {
             ));
         }
     }
+    pub fn add_chars(&self, chars: &[u32]) {
+        self.input_unicode_set.add_chars(chars);
+    }
     pub fn adjust_layout(&self) {
         unsafe {
             for iterator in [
@@ -110,7 +113,7 @@ mod test {
         let face = Face::from_file(path, 0).unwrap();
         let subset = Subset::new();
         let chars: [u32; 3] = [32, 33, 34];
-        subset.input_unicode_set.add_chars(&chars);
+        subset.add_chars(&chars);
 
         subset.clear_drop_table();
         subset.adjust_layout();
