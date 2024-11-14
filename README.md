@@ -1,11 +1,14 @@
-# harfbuzz_rs
+# harfbuzz_rs_now
 
-[![Crates.io](https://img.shields.io/crates/v/harfbuzz_rs.svg)](https://crates.io/crates/harfbuzz_rs)
-[![Documentation](https://docs.rs/harfbuzz_rs/badge.svg)](https://docs.rs/harfbuzz_rs)
-[![Build status](https://github.com/harfbuzz/harfbuzz_rs/actions/workflows/rust.yml/badge.svg)](https://github.com/harfbuzz/harfbuzz_rs/actions/workflows/rust.yml)
+[![Crates.io](https://img.shields.io/crates/v/harfbuzz_rs.svg)](https://crates.io/crates/harfbuzz_rs_now)
+[![Documentation](https://docs.rs/harfbuzz_rs_now/badge.svg)](https://docs.rs/harfbuzz_rs_now)
+[![Build status](https://github.com/KonghaYao/harfbuzz_rs_now/actions/workflows/rust.yml/badge.svg)](https://github.com/KonghaYao/harfbuzz_rs_now/actions/workflows/rust.yml)
 
-`harfbuzz_rs` is a high-level interface to HarfBuzz, exposing its most important
-functionality in a safe manner using Rust.
+`harfbuzz_rs_now` is a high-level interface to HarfBuzz, exposing its most important functionality in a safe manner using Rust. And we provide more powerful methods to you.
+
+- [x] normal usage
+- [x] subset font
+- [x] svg string output
 
 # What is HarfBuzz?
 
@@ -21,31 +24,50 @@ To shape a simple string of text you just create a `Font` from a font file, fill
 a `Buffer` with some text and call the `shape` function.
 
 ```rust
-use harfbuzz_rs::*;
+use harfbuzz_rs_now::*;
 
-let path = "path/to/some/font_file.otf";
-let index = 0; //< face index in the font file
-let face = Face::from_file(path, index)?;
-let mut font = Font::new(face);
+fn main() {
+    let path = "./src/SourceSansVariable-Roman.ttf";
+    let index = 0; //< face index in the font file
+    let face = Face::from_file(path, index).unwrap();
+    let mut font = Font::new(face);
 
-let buffer = UnicodeBuffer::new().add_str("Hello World!");
-let output = shape(&font, buffer, &[]);
+    let buffer = UnicodeBuffer::new().add_str("Hello World!");
 
-// The results of the shaping operation are stored in the `output` buffer.
+    let output = shape(&font, buffer, &[]);
 
-let positions = output.get_glyph_positions();
-let infos = output.get_glyph_infos();
+    // The results of the shaping operation are stored in the `output` buffer.
 
-// iterate over the shaped glyphs
-for (position, info) in positions.iter().zip(infos) {
-    let gid = info.codepoint;
-    let cluster = info.cluster;
-    let x_advance = position.x_advance;
-    let x_offset = position.x_offset;
-    let y_offset = position.y_offset;
+    let positions = output.get_glyph_positions();
+    let infos = output.get_glyph_infos();
 
-    // Here you would usually draw the glyphs.
-    println!("gid{:?}={:?}@{:?},{:?}+{:?}", gid, cluster, x_advance, x_offset, y_offset);
+    // iterate over the shaped glyphs
+    for (position, info) in positions.iter().zip(infos) {
+        let gid = info.codepoint;
+        let cluster = info.cluster;
+        let x_advance = position.x_advance;
+        let x_offset = position.x_offset;
+        let y_offset = position.y_offset;
+
+        // Here you would usually draw the glyphs.
+        println!(
+            "gid{:?}={:?}@{:?},{:?}+{:?}",
+            gid, cluster, x_advance, x_offset, y_offset
+        );
+    }
+
+    // render a simple string to svg!
+    let svg_string = font.render_svg_text("Hello World\nI can see you", &[]);
+    
+
+    // create a font subset     
+    let font_subset = subset::Subset::new();
+    font_subset.clear_drop_table(); // I want to keep all table inside this font
+    font_subset.adjust_layout(); // I want to keep all feature and script layout
+
+    let new_font_face = font_subset.run_subset(&face);
+    let binary_data_of_subset = new_font_face.face_data().get_data();
+
 }
 ```
 
