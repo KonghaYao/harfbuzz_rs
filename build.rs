@@ -19,6 +19,7 @@ fn main() {
     let mut cfg = cc::Build::new();
     cfg.cpp(true)
         .flag("-std=c++11")
+        .flag("-Wno-suggest-attribute=format")
         .warnings(false)
         .include("harfbuzz/src")
         .include("src/subset")
