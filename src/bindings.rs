@@ -1016,6 +1016,18 @@ pub struct hb_face_t {
 extern "C" {
     pub fn hb_face_create(blob: *mut hb_blob_t, index: ::std::os::raw::c_uint) -> *mut hb_face_t;
 }
+extern "C" {
+    pub fn hb_face_create_or_fail(
+        blob: *mut hb_blob_t,
+        index: ::std::os::raw::c_uint,
+    ) -> *mut hb_face_t;
+}
+extern "C" {
+    pub fn hb_face_create_from_file_or_fail(
+        file_name: *const ::std::os::raw::c_char,
+        index: ::std::os::raw::c_uint,
+    ) -> *mut hb_face_t;
+}
 #[doc = " hb_reference_table_func_t:\n @face: an #hb_face_t to reference table for\n @tag: the tag of the table to reference\n @user_data: User data pointer passed by the caller\n\n Callback function for hb_face_create_for_tables().\n\n Return value: (transfer full): A pointer to the @tag table within @face\n\n Since: 0.9.2"]
 pub type hb_reference_table_func_t = ::std::option::Option<
     unsafe extern "C" fn(

@@ -1,6 +1,6 @@
 [package]
 name = "harfbuzz_rs_now"
-version = "2.2.2"
+version = "2.2.3"
 authors = ["Manuel Reinhardt <manuel.rhdt@gmail.com>"]
 description = "A high-level interface to HarfBuzz, exposing its most important functionality in a safe manner using Rust."
 repository = "https://github.com/harfbuzz/harfbuzz_rs"
@@ -15,12 +15,7 @@ categories = [
 license = "MIT"
 edition = "2021"
 links = "harfbuzz"
-include = [
-    "src/*",
-    "harfbuzz/src/*",
-    "harfbuzz-output.cc",
-    "build.rs",
-]
+include = ["src/*", "harfbuzz/src/*", "harfbuzz-output.cc", "build.rs"]
 
 [badges]
 maintainence = { status = "passively-maintained" }
@@ -31,11 +26,11 @@ build-native-harfbuzz = []
 
 [dependencies]
 rusttype = { version = "0.9", optional = true }
-bitflags = "^1"
+bitflags = "2.6.0"
 
 [build-dependencies]
-cc = "1.0"
-pkg-config = "0.3.24"
+cc = "1.2.1"
+pkg-config = "0.3.31"
 
 [lib]
 doctest = false

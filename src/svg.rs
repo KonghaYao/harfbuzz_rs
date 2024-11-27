@@ -18,7 +18,7 @@ pub struct BoundingBox {
 impl<'a> Font<'a> {
     pub fn glyph_to_svg_path(&mut self, glyph: hb_codepoint_t) -> String {
         const PATH_BUFFER_SIZE: u32 = 65536; // should be enough for most glyphs
-        let mut path_buffer = vec![0_i8; PATH_BUFFER_SIZE as usize];
+        let mut path_buffer: Vec<std::os::raw::c_char> = vec![0; PATH_BUFFER_SIZE as usize];
         unsafe {
             hb_glyph_to_svg_path(
                 self.as_raw(),

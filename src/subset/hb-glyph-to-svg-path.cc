@@ -110,26 +110,24 @@ close_path(hb_draw_funcs_t *dfuncs, user_data_t *draw_data, hb_draw_state_t *, v
 
 static hb_draw_funcs_t *funcs = 0;
 
-extern "C"
+
+int hb_glyph_to_svg_path(hb_font_t *font, hb_codepoint_t glyph, char *buf, unsigned buf_size)
 {
-  int hb_glyph_to_svg_path(hb_font_t *font, hb_codepoint_t glyph, char *buf, unsigned buf_size)
+  if (funcs == 0) /* not the best pattern for multi-threaded apps which is not a concern here */
   {
-    if (funcs == 0) /* not the best pattern for multi-threaded apps which is not a concern here */
-    {
-      funcs = hb_draw_funcs_create(); /* will be leaked */
-      hb_draw_funcs_set_move_to_func(funcs, (hb_draw_move_to_func_t)move_to, nullptr, nullptr);
-      hb_draw_funcs_set_line_to_func(funcs, (hb_draw_line_to_func_t)line_to, nullptr, nullptr);
-      hb_draw_funcs_set_quadratic_to_func(funcs, (hb_draw_quadratic_to_func_t)quadratic_to, nullptr, nullptr);
-      hb_draw_funcs_set_cubic_to_func(funcs, (hb_draw_cubic_to_func_t)cubic_to, nullptr, nullptr);
-      hb_draw_funcs_set_close_path_func(funcs, (hb_draw_close_path_func_t)close_path, nullptr, nullptr);
-    }
-
-    user_data_t draw_data(buf, buf_size);
-    hb_font_draw_glyph(font, glyph, funcs, &draw_data);
-    if (draw_data.failure)
-      return -1;
-
-    buf[draw_data.consumed] = '\0';
-    return draw_data.consumed;
+    funcs = hb_draw_funcs_create(); /* will be leaked */
+    hb_draw_funcs_set_move_to_func(funcs, (hb_draw_move_to_func_t)move_to, nullptr, nullptr);
+    hb_draw_funcs_set_line_to_func(funcs, (hb_draw_line_to_func_t)line_to, nullptr, nullptr);
+    hb_draw_funcs_set_quadratic_to_func(funcs, (hb_draw_quadratic_to_func_t)quadratic_to, nullptr, nullptr);
+    hb_draw_funcs_set_cubic_to_func(funcs, (hb_draw_cubic_to_func_t)cubic_to, nullptr, nullptr);
+    hb_draw_funcs_set_close_path_func(funcs, (hb_draw_close_path_func_t)close_path, nullptr, nullptr);
   }
+
+  user_data_t draw_data(buf, buf_size);
+  hb_font_draw_glyph(font, glyph, funcs, &draw_data);
+  if (draw_data.failure)
+    return -1;
+
+  buf[draw_data.consumed] = '\0';
+  return draw_data.consumed;
 }
