@@ -9,6 +9,7 @@
 - [x] normal usage
 - [x] subset font
 - [x] svg string output
+- [x] wasi32 support build!
 
 # What is HarfBuzz?
 

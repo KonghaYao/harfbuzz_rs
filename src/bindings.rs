@@ -1580,34 +1580,93 @@ pub struct hb_color_line_t {
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
+    #[cfg(target_pointer_width = "64")]
     ["Size of hb_color_line_t"][::std::mem::size_of::<hb_color_line_t>() - 104usize];
+    #[cfg(target_pointer_width = "64")]
     ["Alignment of hb_color_line_t"][::std::mem::align_of::<hb_color_line_t>() - 8usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::data"]
         [::std::mem::offset_of!(hb_color_line_t, data) - 0usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::get_color_stops"]
         [::std::mem::offset_of!(hb_color_line_t, get_color_stops) - 8usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::get_color_stops_user_data"]
         [::std::mem::offset_of!(hb_color_line_t, get_color_stops_user_data) - 16usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::get_extend"]
         [::std::mem::offset_of!(hb_color_line_t, get_extend) - 24usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::get_extend_user_data"]
         [::std::mem::offset_of!(hb_color_line_t, get_extend_user_data) - 32usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::reserved0"]
         [::std::mem::offset_of!(hb_color_line_t, reserved0) - 40usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::reserved1"]
         [::std::mem::offset_of!(hb_color_line_t, reserved1) - 48usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::reserved2"]
         [::std::mem::offset_of!(hb_color_line_t, reserved2) - 56usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::reserved3"]
         [::std::mem::offset_of!(hb_color_line_t, reserved3) - 64usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::reserved5"]
         [::std::mem::offset_of!(hb_color_line_t, reserved5) - 72usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::reserved6"]
         [::std::mem::offset_of!(hb_color_line_t, reserved6) - 80usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::reserved7"]
         [::std::mem::offset_of!(hb_color_line_t, reserved7) - 88usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_color_line_t::reserved8"]
         [::std::mem::offset_of!(hb_color_line_t, reserved8) - 96usize];
+
+    #[cfg(target_pointer_width = "32")]
+    ["Size of hb_color_line_t"][::std::mem::size_of::<hb_color_line_t>() - 104usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Alignment of hb_color_line_t"][::std::mem::align_of::<hb_color_line_t>() - 8usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::data"]
+        [::std::mem::offset_of!(hb_color_line_t, data) - 0usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::get_color_stops"]
+        [::std::mem::offset_of!(hb_color_line_t, get_color_stops) - 8usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::get_color_stops_user_data"]
+        [::std::mem::offset_of!(hb_color_line_t, get_color_stops_user_data) - 16usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::get_extend"]
+        [::std::mem::offset_of!(hb_color_line_t, get_extend) - 24usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::get_extend_user_data"]
+        [::std::mem::offset_of!(hb_color_line_t, get_extend_user_data) - 32usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::reserved0"]
+        [::std::mem::offset_of!(hb_color_line_t, reserved0) - 40usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::reserved1"]
+        [::std::mem::offset_of!(hb_color_line_t, reserved1) - 48usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::reserved2"]
+        [::std::mem::offset_of!(hb_color_line_t, reserved2) - 56usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::reserved3"]
+        [::std::mem::offset_of!(hb_color_line_t, reserved3) - 64usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::reserved5"]
+        [::std::mem::offset_of!(hb_color_line_t, reserved5) - 72usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::reserved6"]
+        [::std::mem::offset_of!(hb_color_line_t, reserved6) - 80usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::reserved7"]
+        [::std::mem::offset_of!(hb_color_line_t, reserved7) - 88usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_color_line_t::reserved8"]
+        [::std::mem::offset_of!(hb_color_line_t, reserved8) - 96usize / 2];
 };
 extern "C" {
     pub fn hb_color_line_get_color_stops(
@@ -2878,19 +2937,47 @@ pub struct hb_segment_properties_t {
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
+    #[cfg(target_pointer_width = "64")]
     ["Size of hb_segment_properties_t"][::std::mem::size_of::<hb_segment_properties_t>() - 32usize];
+    #[cfg(target_pointer_width = "64")]
     ["Alignment of hb_segment_properties_t"]
         [::std::mem::align_of::<hb_segment_properties_t>() - 8usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_segment_properties_t::direction"]
         [::std::mem::offset_of!(hb_segment_properties_t, direction) - 0usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_segment_properties_t::script"]
         [::std::mem::offset_of!(hb_segment_properties_t, script) - 4usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_segment_properties_t::language"]
         [::std::mem::offset_of!(hb_segment_properties_t, language) - 8usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_segment_properties_t::reserved1"]
         [::std::mem::offset_of!(hb_segment_properties_t, reserved1) - 16usize];
+    #[cfg(target_pointer_width = "64")]
     ["Offset of field: hb_segment_properties_t::reserved2"]
         [::std::mem::offset_of!(hb_segment_properties_t, reserved2) - 24usize];
+
+    #[cfg(target_pointer_width = "32")]
+    ["Size of hb_segment_properties_t"][::std::mem::size_of::<hb_segment_properties_t>() - 20usize];
+    #[cfg(target_pointer_width = "32")]
+    ["Alignment of hb_segment_properties_t"]
+        [::std::mem::align_of::<hb_segment_properties_t>() - 8usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_segment_properties_t::direction"]
+        [::std::mem::offset_of!(hb_segment_properties_t, direction) - 0usize / 2];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_segment_properties_t::script"]
+        [::std::mem::offset_of!(hb_segment_properties_t, script) - 4usize];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_segment_properties_t::language"]
+        [::std::mem::offset_of!(hb_segment_properties_t, language) - 8usize];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_segment_properties_t::reserved1"]
+        [::std::mem::offset_of!(hb_segment_properties_t, reserved1) - 12usize];
+    #[cfg(target_pointer_width = "32")]
+    ["Offset of field: hb_segment_properties_t::reserved2"]
+        [::std::mem::offset_of!(hb_segment_properties_t, reserved2) - 16usize];
 };
 extern "C" {
     pub fn hb_segment_properties_equal(
@@ -3606,8 +3693,14 @@ pub struct hb_ot_name_entry_t {
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
+    #[cfg(target_pointer_width = "64")]
     ["Size of hb_ot_name_entry_t"][::std::mem::size_of::<hb_ot_name_entry_t>() - 16usize];
+    #[cfg(target_pointer_width = "64")]
     ["Alignment of hb_ot_name_entry_t"][::std::mem::align_of::<hb_ot_name_entry_t>() - 8usize];
+    #[cfg(target_pointer_width = "32")]
+    ["Size of hb_ot_name_entry_t"][::std::mem::size_of::<hb_ot_name_entry_t>() - 12usize];
+    #[cfg(target_pointer_width = "32")]
+    ["Alignment of hb_ot_name_entry_t"][::std::mem::align_of::<hb_ot_name_entry_t>() - 4usize];
     ["Offset of field: hb_ot_name_entry_t::name_id"]
         [::std::mem::offset_of!(hb_ot_name_entry_t, name_id) - 0usize];
     ["Offset of field: hb_ot_name_entry_t::var"]
