@@ -6,10 +6,10 @@
 
 `harfbuzz_rs_now` is a high-level interface to HarfBuzz, exposing its most important functionality in a safe manner using Rust. And we provide more powerful methods to you.
 
-- [x] normal usage
-- [x] subset font
-- [x] svg string output
-- [x] wasi32 support build!
+-   [x] normal usage
+-   [x] subset font
+-   [x] svg string output
+-   [x] wasi32 support build!
 
 # What is HarfBuzz?
 
@@ -108,6 +108,26 @@ Note that harfbuzz internally supports scaling fonts itself as well (using `font
 # Supported HarfBuzz versions
 
 This crate is tested to work with harfbuzz versions 2.0 and higher. Older versions may work as well. I recommend statically linking the harfbuzz library provided by the `harfbuzz-sys` crate which is always up-to-date.
+
+# Wasm32-wasi Support
+
+First, install the wasi-sdk, then set the WASI_SYSROOT environment variable to the share/wasi-sysroot path of your wasi-sdk. Finally, run cargo build --target wasm32-wasi.
+
+```sh
+apt install wget
+WASI_OS=linux
+WASI_ARCH=x86_64
+WASI_VERSION=24
+WASI_VERSION_FULL=${WASI_VERSION}.0
+wget https://github.moeyy.xyz/https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-${WASI_ARCH}-${WASI_OS}.tar.gz
+if [ ! -d "/opt/wasi-sdk" ]; then
+  mkdir /opt/wasi-sdk
+fi
+tar xvf wasi-sdk-${WASI_VERSION_FULL}-${WASI_ARCH}-${WASI_OS}.tar.gz -C /opt/wasi-sdk
+rm -rf wasi-sdk-${WASI_VERSION_FULL}-${WASI_ARCH}-${WASI_OS}.tar.gz
+export WASI_SYSROOT="/opt/wasi-sdk/wasi-sdk-${WASI_VERSION_FULL}-${WASI_ARCH}-${WASI_OS}/share/wasi-sysroot"
+echo -e "\nexport WASI_SYSROOT=\"${WASI_SYSROOT}\"\n" >> ~/.bashrc
+```
 
 # Optional Features
 
