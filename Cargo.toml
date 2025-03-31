@@ -1,7 +1,10 @@
 [package]
 name = "harfbuzz_rs_now"
-version = "2.2.6"
-authors = ["Manuel Reinhardt <manuel.rhdt@gmail.com>","KonghaYao <3446798488@qq.com>"]
+version = "2.3.0"
+authors = [
+    "Manuel Reinhardt <manuel.rhdt@gmail.com>",
+    "KonghaYao <3446798488@qq.com>",
+]
 description = "A high-level interface to HarfBuzz, exposing its most important functionality in a safe manner using Rust."
 repository = "https://github.com/harfbuzz/harfbuzz_rs"
 readme = "README.md"
@@ -29,7 +32,7 @@ rusttype = { version = "0.9", optional = true }
 bitflags = "2.6.0"
 
 [build-dependencies]
-cc = "1.2.1"
+cc = "1.2.17"
 pkg-config = "0.3.31"
 
 [lib]
