@@ -25,7 +25,10 @@ fn main() {
         .file("harfbuzz-output.cc");
 
     if !target.contains("windows-msvc") {
-        cfg.flag("-Wno-suggest-attribute=format").flag("/bigobj");
+        cfg.flag("-Wno-suggest-attribute=format");
+    } else {
+        // windows-msvc
+        cfg.flag("/bigobj");
     }
     if !target.contains("windows") {
         cfg.define("HAVE_PTHREAD", "1");
