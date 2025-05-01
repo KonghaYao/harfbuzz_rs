@@ -10,6 +10,7 @@ fn main() {
     let target = env::var("TARGET").unwrap();
 
     println!("cargo:rerun-if-env-changed=HARFBUZZ_SYS_NO_PKG_CONFIG");
+    println!("cargo:rerun-if-changed=harfbuzz-output.cc");
     if (target.contains("wasm32") || env::var_os("HARFBUZZ_SYS_NO_PKG_CONFIG").is_none())
         && pkg_config::probe_library("harfbuzz").is_ok()
     {
@@ -25,7 +26,7 @@ fn main() {
         .file("harfbuzz-output.cc");
 
     if !target.contains("windows-msvc") {
-        cfg.flag("-Wno-suggest-attribute=format");
+        cfg.flag("-Wno-property-attribute-mismatch");
     } else {
         // windows-msvc
         cfg.flag("/bigobj");

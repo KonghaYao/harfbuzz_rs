@@ -1,6 +1,6 @@
 [package]
 name = "harfbuzz_rs_now"
-version = "2.3.0"
+version = "2.3.2"
 authors = [
     "Manuel Reinhardt <manuel.rhdt@gmail.com>",
     "KonghaYao <3446798488@qq.com>",
@@ -24,8 +24,9 @@ include = ["src/*", "harfbuzz/src/*", "harfbuzz-output.cc", "build.rs"]
 maintainence = { status = "passively-maintained" }
 
 [features]
-default = ["build-native-harfbuzz"]
+default = ["build-native-harfbuzz", "variation_support"]
 build-native-harfbuzz = []
+variation_support = []
 
 [dependencies]
 rusttype = { version = "0.9", optional = true }

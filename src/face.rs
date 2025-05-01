@@ -153,7 +153,7 @@ impl<'a> Face<'a> {
         }
     }
 
-    #[cfg(variation_support)]
+    #[cfg(feature = "variation_support")]
     pub fn get_variation_axis_infos(&self) -> Vec<VariationAxisInfo> {
         let mut count = unsafe { hb_ot_var_get_axis_count(self.as_raw()) };
         let mut vector: Vec<VariationAxisInfo> = Vec::with_capacity(count as usize);
@@ -165,7 +165,7 @@ impl<'a> Face<'a> {
     }
 }
 
-#[cfg(variation_support)]
+#[cfg(feature = "variation_support")]
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
 pub struct VariationAxisInfo(pub hb_ot_var_axis_info_t);
