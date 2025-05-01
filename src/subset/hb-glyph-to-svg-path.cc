@@ -125,7 +125,7 @@ extern "C"
     }
 
     user_data_t draw_data(buf, buf_size);
-    hb_font_draw_glyph(font, glyph, funcs, &draw_data);
+    hb_font_draw_glyph_or_fail(font, glyph, funcs, &draw_data);
     if (draw_data.failure)
       return -1;
 

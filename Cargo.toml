@@ -32,7 +32,7 @@ rusttype = { version = "0.9", optional = true }
 bitflags = "2.6.0"
 
 [build-dependencies]
-cc = "1.2.17"
+cc = "1.2.20"
 pkg-config = "0.3.31"
 
 [lib]

@@ -413,6 +413,19 @@ const _: () = {
 pub struct hb_font_t {
     _unused: [u8; 0],
 }
+extern "C" {
+    pub fn hb_malloc(size: usize) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn hb_calloc(nmemb: usize, size: usize) -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn hb_realloc(ptr: *mut ::std::os::raw::c_void, size: usize)
+        -> *mut ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn hb_free(ptr: *mut ::std::os::raw::c_void);
+}
 pub const HB_MEMORY_MODE_DUPLICATE: hb_memory_mode_t = 0;
 pub const HB_MEMORY_MODE_READONLY: hb_memory_mode_t = 1;
 pub const HB_MEMORY_MODE_WRITABLE: hb_memory_mode_t = 2;
@@ -1023,12 +1036,29 @@ extern "C" {
     ) -> *mut hb_face_t;
 }
 extern "C" {
+    pub fn hb_face_create_or_fail_using(
+        blob: *mut hb_blob_t,
+        index: ::std::os::raw::c_uint,
+        loader_name: *const ::std::os::raw::c_char,
+    ) -> *mut hb_face_t;
+}
+extern "C" {
     pub fn hb_face_create_from_file_or_fail(
         file_name: *const ::std::os::raw::c_char,
         index: ::std::os::raw::c_uint,
     ) -> *mut hb_face_t;
 }
-#[doc = " hb_reference_table_func_t:\n @face: an #hb_face_t to reference table for\n @tag: the tag of the table to reference\n @user_data: User data pointer passed by the caller\n\n Callback function for hb_face_create_for_tables().\n\n Return value: (transfer full): A pointer to the @tag table within @face\n\n Since: 0.9.2"]
+extern "C" {
+    pub fn hb_face_create_from_file_or_fail_using(
+        file_name: *const ::std::os::raw::c_char,
+        index: ::std::os::raw::c_uint,
+        loader_name: *const ::std::os::raw::c_char,
+    ) -> *mut hb_face_t;
+}
+extern "C" {
+    pub fn hb_face_list_loaders() -> *mut *const ::std::os::raw::c_char;
+}
+#[doc = " hb_reference_table_func_t:\n @face: an #hb_face_t to reference table for\n @tag: the tag of the table to reference\n @user_data: User data pointer passed by the caller\n\n Callback function for hb_face_create_for_tables(). The @tag is the tag of the\n table to reference, and the special tag #HB_TAG_NONE is used to reference the\n blob of the face itself. If referencing the face blob is not possible, it is\n recommended to set hb_get_table_tags_func_t on the @face to allow\n hb_face_reference_blob() to create a face blob out of individual table blobs.\n\n Return value: (transfer full): A pointer to the @tag table within @face or\n `NULL` if the table is not found or cannot be referenced.\n\n Since: 0.9.2"]
 pub type hb_reference_table_func_t = ::std::option::Option<
     unsafe extern "C" fn(
         face: *mut hb_face_t,
@@ -1071,7 +1101,7 @@ extern "C" {
     pub fn hb_face_make_immutable(face: *mut hb_face_t);
 }
 extern "C" {
-    pub fn hb_face_is_immutable(face: *const hb_face_t) -> hb_bool_t;
+    pub fn hb_face_is_immutable(face: *mut hb_face_t) -> hb_bool_t;
 }
 extern "C" {
     pub fn hb_face_reference_table(face: *const hb_face_t, tag: hb_tag_t) -> *mut hb_blob_t;
@@ -1453,7 +1483,7 @@ pub type hb_paint_pop_transform_func_t = ::std::option::Option<
         user_data: *mut ::std::os::raw::c_void,
     ),
 >;
-#[doc = " hb_paint_color_glyph_func_t:\n @funcs: paint functions object\n @paint_data: The data accompanying the paint functions in hb_font_paint_glyph()\n @glyph: the glyph ID\n @font: the font\n @user_data: User data pointer passed to hb_paint_funcs_set_color_glyph_func()\n\n A virtual method for the #hb_paint_funcs_t to render a color glyph by glyph index.\n\n Return value: %true if the glyph was painted, %false otherwise.\n\n Since: 8.2.0"]
+#[doc = " hb_paint_color_glyph_func_t:\n @funcs: paint functions object\n @paint_data: The data accompanying the paint functions in hb_font_paint_glyph()\n @glyph: the glyph ID\n @font: the font\n @user_data: User data pointer passed to hb_paint_funcs_set_color_glyph_func()\n\n A virtual method for the #hb_paint_funcs_t to render a color glyph by glyph index.\n\n Return value: `true` if the glyph was painted, `false` otherwise.\n\n Since: 8.2.0"]
 pub type hb_paint_color_glyph_func_t = ::std::option::Option<
     unsafe extern "C" fn(
         funcs: *mut hb_paint_funcs_t,
@@ -1463,7 +1493,7 @@ pub type hb_paint_color_glyph_func_t = ::std::option::Option<
         user_data: *mut ::std::os::raw::c_void,
     ) -> hb_bool_t,
 >;
-#[doc = " hb_paint_push_clip_glyph_func_t:\n @funcs: paint functions object\n @paint_data: The data accompanying the paint functions in hb_font_paint_glyph()\n @glyph: the glyph ID\n @font: the font\n @user_data: User data pointer passed to hb_paint_funcs_set_push_clip_glyph_func()\n\n A virtual method for the #hb_paint_funcs_t to clip\n subsequent paint calls to the outline of a glyph.\n\n The coordinates of the glyph outline are interpreted according\n to the current transform.\n\n This clip is applied in addition to the current clip,\n and remains in effect until a matching call to\n the #hb_paint_funcs_pop_clip_func_t vfunc.\n\n Since: 7.0.0"]
+#[doc = " hb_paint_push_clip_glyph_func_t:\n @funcs: paint functions object\n @paint_data: The data accompanying the paint functions in hb_font_paint_glyph()\n @glyph: the glyph ID\n @font: the font\n @user_data: User data pointer passed to hb_paint_funcs_set_push_clip_glyph_func()\n\n A virtual method for the #hb_paint_funcs_t to clip\n subsequent paint calls to the outline of a glyph.\n\n The coordinates of the glyph outline are expected in the\n current @font scale (ie. the results of calling\n hb_font_draw_glyph() with @font). The outline is\n transformed by the current transform.\n\n This clip is applied in addition to the current clip,\n and remains in effect until a matching call to\n the #hb_paint_funcs_pop_clip_func_t vfunc.\n\n Since: 7.0.0"]
 pub type hb_paint_push_clip_glyph_func_t = ::std::option::Option<
     unsafe extern "C" fn(
         funcs: *mut hb_paint_funcs_t,
@@ -1503,7 +1533,7 @@ pub type hb_paint_color_func_t = ::std::option::Option<
         user_data: *mut ::std::os::raw::c_void,
     ),
 >;
-#[doc = " hb_paint_image_func_t:\n @funcs: paint functions object\n @paint_data: The data accompanying the paint functions in hb_font_paint_glyph()\n @image: the image data\n @width: width of the raster image in pixels, or 0\n @height: height of the raster image in pixels, or 0\n @format: the image format as a tag\n @slant: the synthetic slant ratio to be applied to the image during rendering\n @extents: (nullable): glyph extents for desired rendering\n @user_data: User data pointer passed to hb_paint_funcs_set_image_func()\n\n A virtual method for the #hb_paint_funcs_t to paint a glyph image.\n\n This method is called for glyphs with image blobs in the CBDT,\n sbix or SVG tables. The @format identifies the kind of data that\n is contained in @image. Possible values include #HB_PAINT_IMAGE_FORMAT_PNG,\n #HB_PAINT_IMAGE_FORMAT_SVG and #HB_PAINT_IMAGE_FORMAT_BGRA.\n\n The image dimensions and glyph extents are provided if available,\n and should be used to size and position the image.\n\n Return value: Whether the operation was successful.\n\n Since: 7.0.0"]
+#[doc = " hb_paint_image_func_t:\n @funcs: paint functions object\n @paint_data: The data accompanying the paint functions in hb_font_paint_glyph()\n @image: the image data\n @width: width of the raster image in pixels, or 0\n @height: height of the raster image in pixels, or 0\n @format: the image format as a tag\n @slant: Deprecated. Always set to 0.0.\n @extents: (nullable): glyph extents for desired rendering\n @user_data: User data pointer passed to hb_paint_funcs_set_image_func()\n\n A virtual method for the #hb_paint_funcs_t to paint a glyph image.\n\n This method is called for glyphs with image blobs in the CBDT,\n sbix or SVG tables. The @format identifies the kind of data that\n is contained in @image. Possible values include #HB_PAINT_IMAGE_FORMAT_PNG,\n #HB_PAINT_IMAGE_FORMAT_SVG and #HB_PAINT_IMAGE_FORMAT_BGRA.\n\n The image dimensions and glyph extents are provided if available,\n and should be used to size and position the image.\n\n Return value: Whether the operation was successful.\n\n Since: 7.0.0"]
 pub type hb_paint_image_func_t = ::std::option::Option<
     unsafe extern "C" fn(
         funcs: *mut hb_paint_funcs_t,
@@ -1918,6 +1948,20 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn hb_paint_push_font_transform(
+        funcs: *mut hb_paint_funcs_t,
+        paint_data: *mut ::std::os::raw::c_void,
+        font: *const hb_font_t,
+    );
+}
+extern "C" {
+    pub fn hb_paint_push_inverse_font_transform(
+        funcs: *mut hb_paint_funcs_t,
+        paint_data: *mut ::std::os::raw::c_void,
+        font: *const hb_font_t,
+    );
+}
+extern "C" {
     pub fn hb_paint_pop_transform(
         funcs: *mut hb_paint_funcs_t,
         paint_data: *mut ::std::os::raw::c_void,
@@ -2262,8 +2306,8 @@ pub type hb_font_get_glyph_from_name_func_t = ::std::option::Option<
         user_data: *mut ::std::os::raw::c_void,
     ) -> hb_bool_t,
 >;
-#[doc = " hb_font_draw_glyph_func_t:\n @font: #hb_font_t to work upon\n @font_data: @font user data pointer\n @glyph: The glyph ID to query\n @draw_funcs: The draw functions to send the shape data to\n @draw_data: The data accompanying the draw functions\n @user_data: User data pointer passed by the caller\n\n A virtual method for the #hb_font_funcs_t of an #hb_font_t object.\n\n Since: 7.0.0\n"]
-pub type hb_font_draw_glyph_func_t = ::std::option::Option<
+#[doc = " hb_font_draw_glyph_or_fail_func_t:\n @font: #hb_font_t to work upon\n @font_data: @font user data pointer\n @glyph: The glyph ID to query\n @draw_funcs: The draw functions to send the shape data to\n @draw_data: The data accompanying the draw functions\n @user_data: User data pointer passed by the caller\n\n A virtual method for the #hb_font_funcs_t of an #hb_font_t object.\n\n Return value: `true` if glyph was drawn, `false` otherwise\n\n XSince: REPLACEME"]
+pub type hb_font_draw_glyph_or_fail_func_t = ::std::option::Option<
     unsafe extern "C" fn(
         font: *mut hb_font_t,
         font_data: *mut ::std::os::raw::c_void,
@@ -2271,10 +2315,10 @@ pub type hb_font_draw_glyph_func_t = ::std::option::Option<
         draw_funcs: *mut hb_draw_funcs_t,
         draw_data: *mut ::std::os::raw::c_void,
         user_data: *mut ::std::os::raw::c_void,
-    ),
+    ) -> hb_bool_t,
 >;
-#[doc = " hb_font_paint_glyph_func_t:\n @font: #hb_font_t to work upon\n @font_data: @font user data pointer\n @glyph: The glyph ID to query\n @paint_funcs: The paint functions to use\n @paint_data: The data accompanying the paint functions\n @palette_index: The color palette to use\n @foreground: The foreground color\n @user_data: User data pointer passed by the caller\n\n A virtual method for the #hb_font_funcs_t of an #hb_font_t object.\n\n Since: 7.0.0"]
-pub type hb_font_paint_glyph_func_t = ::std::option::Option<
+#[doc = " hb_font_paint_glyph_or_fail_func_t:\n @font: #hb_font_t to work upon\n @font_data: @font user data pointer\n @glyph: The glyph ID to query\n @paint_funcs: The paint functions to use\n @paint_data: The data accompanying the paint functions\n @palette_index: The color palette to use\n @foreground: The foreground color\n @user_data: User data pointer passed by the caller\n\n A virtual method for the #hb_font_funcs_t of an #hb_font_t object.\n\n Return value: `true` if glyph was painted, `false` otherwise\n\n XSince: REPLACEME"]
+pub type hb_font_paint_glyph_or_fail_func_t = ::std::option::Option<
     unsafe extern "C" fn(
         font: *mut hb_font_t,
         font_data: *mut ::std::os::raw::c_void,
@@ -2284,7 +2328,7 @@ pub type hb_font_paint_glyph_func_t = ::std::option::Option<
         palette_index: ::std::os::raw::c_uint,
         foreground: hb_color_t,
         user_data: *mut ::std::os::raw::c_void,
-    ),
+    ) -> hb_bool_t,
 >;
 extern "C" {
     #[doc = " hb_font_funcs_set_font_h_extents_func:\n @ffuncs: A font-function structure\n @func: (closure user_data) (destroy destroy) (scope notified): The callback function to assign\n @user_data: Data to pass to @func\n @destroy: (nullable): The function to call when @user_data is not needed anymore\n\n Sets the implementation function for #hb_font_get_font_h_extents_func_t.\n\n Since: 1.1.2"]
@@ -2431,19 +2475,19 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " hb_font_funcs_set_draw_glyph_func:\n @ffuncs: A font-function structure\n @func: (closure user_data) (destroy destroy) (scope notified): The callback function to assign\n @user_data: Data to pass to @func\n @destroy: (nullable): The function to call when @user_data is not needed anymore\n\n Sets the implementation function for #hb_font_draw_glyph_func_t.\n\n Since: 7.0.0"]
-    pub fn hb_font_funcs_set_draw_glyph_func(
+    #[doc = " hb_font_funcs_set_draw_glyph_or_fail_func:\n @ffuncs: A font-function structure\n @func: (closure user_data) (destroy destroy) (scope notified): The callback function to assign\n @user_data: Data to pass to @func\n @destroy: (nullable): The function to call when @user_data is not needed anymore\n\n Sets the implementation function for #hb_font_draw_glyph_or_fail_func_t.\n\n XSince: REPLACEME"]
+    pub fn hb_font_funcs_set_draw_glyph_or_fail_func(
         ffuncs: *mut hb_font_funcs_t,
-        func: hb_font_draw_glyph_func_t,
+        func: hb_font_draw_glyph_or_fail_func_t,
         user_data: *mut ::std::os::raw::c_void,
         destroy: hb_destroy_func_t,
     );
 }
 extern "C" {
-    #[doc = " hb_font_funcs_set_paint_glyph_func:\n @ffuncs: A font-function structure\n @func: (closure user_data) (destroy destroy) (scope notified): The callback function to assign\n @user_data: Data to pass to @func\n @destroy: (nullable): The function to call when @user_data is no longer needed\n\n Sets the implementation function for #hb_font_paint_glyph_func_t.\n\n Since: 7.0.0"]
-    pub fn hb_font_funcs_set_paint_glyph_func(
+    #[doc = " hb_font_funcs_set_paint_glyph_or_fail_func:\n @ffuncs: A font-function structure\n @func: (closure user_data) (destroy destroy) (scope notified): The callback function to assign\n @user_data: Data to pass to @func\n @destroy: (nullable): The function to call when @user_data is no longer needed\n\n Sets the implementation function for #hb_font_paint_glyph_or_fail_func_t.\n\n XSince: REPLACEME"]
+    pub fn hb_font_funcs_set_paint_glyph_or_fail_func(
         ffuncs: *mut hb_font_funcs_t,
-        func: hb_font_paint_glyph_func_t,
+        func: hb_font_paint_glyph_or_fail_func_t,
         user_data: *mut ::std::os::raw::c_void,
         destroy: hb_destroy_func_t,
     );
@@ -2573,22 +2617,22 @@ extern "C" {
     ) -> hb_bool_t;
 }
 extern "C" {
-    pub fn hb_font_draw_glyph(
+    pub fn hb_font_draw_glyph_or_fail(
         font: *mut hb_font_t,
         glyph: hb_codepoint_t,
         dfuncs: *mut hb_draw_funcs_t,
         draw_data: *mut ::std::os::raw::c_void,
-    );
+    ) -> hb_bool_t;
 }
 extern "C" {
-    pub fn hb_font_paint_glyph(
+    pub fn hb_font_paint_glyph_or_fail(
         font: *mut hb_font_t,
         glyph: hb_codepoint_t,
         pfuncs: *mut hb_paint_funcs_t,
         paint_data: *mut ::std::os::raw::c_void,
         palette_index: ::std::os::raw::c_uint,
         foreground: hb_color_t,
-    );
+    ) -> hb_bool_t;
 }
 extern "C" {
     pub fn hb_font_get_glyph(
@@ -2697,6 +2741,24 @@ extern "C" {
     ) -> hb_bool_t;
 }
 extern "C" {
+    pub fn hb_font_draw_glyph(
+        font: *mut hb_font_t,
+        glyph: hb_codepoint_t,
+        dfuncs: *mut hb_draw_funcs_t,
+        draw_data: *mut ::std::os::raw::c_void,
+    );
+}
+extern "C" {
+    pub fn hb_font_paint_glyph(
+        font: *mut hb_font_t,
+        glyph: hb_codepoint_t,
+        pfuncs: *mut hb_paint_funcs_t,
+        paint_data: *mut ::std::os::raw::c_void,
+        palette_index: ::std::os::raw::c_uint,
+        foreground: hb_color_t,
+    );
+}
+extern "C" {
     pub fn hb_font_create(face: *mut hb_face_t) -> *mut hb_font_t;
 }
 extern "C" {
@@ -2766,6 +2828,15 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn hb_font_set_funcs_using(
+        font: *mut hb_font_t,
+        name: *const ::std::os::raw::c_char,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_font_list_funcs() -> *mut *const ::std::os::raw::c_char;
+}
+extern "C" {
     pub fn hb_font_set_scale(
         font: *mut hb_font_t,
         x_scale: ::std::os::raw::c_int,
@@ -2798,6 +2869,9 @@ extern "C" {
 }
 extern "C" {
     pub fn hb_font_get_ptem(font: *mut hb_font_t) -> f32;
+}
+extern "C" {
+    pub fn hb_font_is_synthetic(font: *mut hb_font_t) -> hb_bool_t;
 }
 extern "C" {
     pub fn hb_font_set_synthetic_bold(
@@ -3109,8 +3183,9 @@ extern "C" {
 pub const HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES: hb_buffer_cluster_level_t = 0;
 pub const HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS: hb_buffer_cluster_level_t = 1;
 pub const HB_BUFFER_CLUSTER_LEVEL_CHARACTERS: hb_buffer_cluster_level_t = 2;
+pub const HB_BUFFER_CLUSTER_LEVEL_GRAPHEMES: hb_buffer_cluster_level_t = 3;
 pub const HB_BUFFER_CLUSTER_LEVEL_DEFAULT: hb_buffer_cluster_level_t = 0;
-#[doc = " hb_buffer_cluster_level_t:\n @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES: Return cluster values grouped by graphemes into\n   monotone order.\n @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS: Return cluster values grouped into monotone order.\n @HB_BUFFER_CLUSTER_LEVEL_CHARACTERS: Don't group cluster values.\n @HB_BUFFER_CLUSTER_LEVEL_DEFAULT: Default cluster level,\n   equal to @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES.\n\n Data type for holding HarfBuzz's clustering behavior options. The cluster level\n dictates one aspect of how HarfBuzz will treat non-base characters\n during shaping.\n\n In @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES, non-base\n characters are merged into the cluster of the base character that precedes them.\n\n In @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS, non-base characters are initially\n assigned their own cluster values, which are not merged into preceding base\n clusters. This allows HarfBuzz to perform additional operations like reorder\n sequences of adjacent marks.\n\n @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES is the default, because it maintains\n backward compatibility with older versions of HarfBuzz. New client programs that\n do not need to maintain such backward compatibility are recommended to use\n @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS instead of the default.\n\n Since: 0.9.42"]
+#[doc = " hb_buffer_cluster_level_t:\n @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES: Return cluster values grouped by graphemes into\n   monotone order.\n @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS: Return cluster values grouped into monotone order.\n @HB_BUFFER_CLUSTER_LEVEL_CHARACTERS: Don't group cluster values.\n @HB_BUFFER_CLUSTER_LEVEL_DEFAULT: Default cluster level,\n   equal to @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES.\n @HB_BUFFER_CLUSTER_LEVEL_GRAPHEMES: Only group clusters, but don't enforce monotone order.\n\n Data type for holding HarfBuzz's clustering behavior options. The cluster level\n dictates one aspect of how HarfBuzz will treat non-base characters\n during shaping.\n\n In @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES, non-base\n characters are merged into the cluster of the base character that precedes them.\n There is also cluster merging every time the clusters will otherwise become non-monotone.\n\n In @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS, non-base characters are initially\n assigned their own cluster values, which are not merged into preceding base\n clusters. This allows HarfBuzz to perform additional operations like reorder\n sequences of adjacent marks. The output is still monotone, but the cluster\n values are more granular.\n\n In @HB_BUFFER_CLUSTER_LEVEL_CHARACTERS, non-base characters are assigned their\n own cluster values, which are not merged into preceding base clusters. Moreover,\n the cluster values are not merged into monotone order. This is the most granular\n cluster level, and it is useful for clients that need to know the exact cluster\n values of each character, but is harder to use for clients, since clusters\n might appear in any order.\n\n In @HB_BUFFER_CLUSTER_LEVEL_GRAPHEMES, non-base characters are merged into the\n cluster of the base character that precedes them. This is similar to the Unicode\n Grapheme Cluster algorithm, but it is not exactly the same. The output is\n not forced to be monotone. This is useful for clients that want to use HarfBuzz\n as a cheap implementation of the Unicode Grapheme Cluster algorithm.\n\n @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES is the default, because it maintains\n backward compatibility with older versions of HarfBuzz. New client programs that\n do not need to maintain such backward compatibility are recommended to use\n @HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS instead of the default.\n\n Since: 0.9.42"]
 pub type hb_buffer_cluster_level_t = ::std::os::raw::c_uint;
 extern "C" {
     pub fn hb_buffer_set_cluster_level(
@@ -3490,11 +3565,53 @@ pub type hb_font_get_glyph_shape_func_t = ::std::option::Option<
         user_data: *mut ::std::os::raw::c_void,
     ),
 >;
+#[doc = " hb_font_draw_glyph_func_t:\n @font: #hb_font_t to work upon\n @font_data: @font user data pointer\n @glyph: The glyph ID to query\n @draw_funcs: The draw functions to send the shape data to\n @draw_data: The data accompanying the draw functions\n @user_data: User data pointer passed by the caller\n\n A virtual method for the #hb_font_funcs_t of an #hb_font_t object.\n\n Since: 7.0.0\n XDeprecated: REPLACEME: Use hb_font_draw_glyph_func_or_fail_t instead."]
+pub type hb_font_draw_glyph_func_t = ::std::option::Option<
+    unsafe extern "C" fn(
+        font: *mut hb_font_t,
+        font_data: *mut ::std::os::raw::c_void,
+        glyph: hb_codepoint_t,
+        draw_funcs: *mut hb_draw_funcs_t,
+        draw_data: *mut ::std::os::raw::c_void,
+        user_data: *mut ::std::os::raw::c_void,
+    ),
+>;
+#[doc = " hb_font_paint_glyph_func_t:\n @font: #hb_font_t to work upon\n @font_data: @font user data pointer\n @glyph: The glyph ID to query\n @paint_funcs: The paint functions to use\n @paint_data: The data accompanying the paint functions\n @palette_index: The color palette to use\n @foreground: The foreground color\n @user_data: User data pointer passed by the caller\n\n A virtual method for the #hb_font_funcs_t of an #hb_font_t object.\n\n Since: 7.0.0\n XDeprecated: REPLACEME: Use hb_font_paint_glyph_or_fail_func_t instead."]
+pub type hb_font_paint_glyph_func_t = ::std::option::Option<
+    unsafe extern "C" fn(
+        font: *mut hb_font_t,
+        font_data: *mut ::std::os::raw::c_void,
+        glyph: hb_codepoint_t,
+        paint_funcs: *mut hb_paint_funcs_t,
+        paint_data: *mut ::std::os::raw::c_void,
+        palette_index: ::std::os::raw::c_uint,
+        foreground: hb_color_t,
+        user_data: *mut ::std::os::raw::c_void,
+    ) -> hb_bool_t,
+>;
 extern "C" {
     #[doc = " hb_font_funcs_set_glyph_shape_func:\n @ffuncs: A font-function structure\n @func: (closure user_data) (destroy destroy) (scope notified): The callback function to assign\n @user_data: Data to pass to @func\n @destroy: (nullable): The function to call when @user_data is not needed anymore\n\n Sets the implementation function for #hb_font_get_glyph_shape_func_t,\n which is the same as #hb_font_draw_glyph_func_t.\n\n Since: 4.0.0\n Deprecated: 7.0.0: Use hb_font_funcs_set_draw_glyph_func() instead"]
     pub fn hb_font_funcs_set_glyph_shape_func(
         ffuncs: *mut hb_font_funcs_t,
         func: hb_font_get_glyph_shape_func_t,
+        user_data: *mut ::std::os::raw::c_void,
+        destroy: hb_destroy_func_t,
+    );
+}
+extern "C" {
+    #[doc = " hb_font_funcs_set_draw_glyph_func:\n @ffuncs: A font-function structure\n @func: (closure user_data) (destroy destroy) (scope notified): The callback function to assign\n @user_data: Data to pass to @func\n @destroy: (nullable): The function to call when @user_data is not needed anymore\n\n Sets the implementation function for #hb_font_draw_glyph_func_t.\n\n Since: 7.0.0\n XDeprecated: REPLACEME: Use hb_font_funcs_set_draw_glyph_or_fail_func instead."]
+    pub fn hb_font_funcs_set_draw_glyph_func(
+        ffuncs: *mut hb_font_funcs_t,
+        func: hb_font_draw_glyph_func_t,
+        user_data: *mut ::std::os::raw::c_void,
+        destroy: hb_destroy_func_t,
+    );
+}
+extern "C" {
+    #[doc = " hb_font_funcs_set_paint_glyph_func:\n @ffuncs: A font-function structure\n @func: (closure user_data) (destroy destroy) (scope notified): The callback function to assign\n @user_data: Data to pass to @func\n @destroy: (nullable): The function to call when @user_data is no longer needed\n\n Sets the implementation function for #hb_font_paint_glyph_func_t.\n\n Since: 7.0.0\n XDeprecated: REPLACEME: Use hb_font_funcs_set_paint_glyph_or_fail_func() instead."]
+    pub fn hb_font_funcs_set_paint_glyph_func(
+        ffuncs: *mut hb_font_funcs_t,
+        func: hb_font_paint_glyph_func_t,
         user_data: *mut ::std::os::raw::c_void,
         destroy: hb_destroy_func_t,
     );
@@ -4621,6 +4738,14 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn hb_ot_shape_plan_get_feature_tags(
+        shape_plan: *mut hb_shape_plan_t,
+        start_offset: ::std::os::raw::c_uint,
+        tag_count: *mut ::std::os::raw::c_uint,
+        tags: *mut hb_tag_t,
+    ) -> ::std::os::raw::c_uint;
+}
+extern "C" {
     pub fn hb_ot_var_has_data(face: *mut hb_face_t) -> hb_bool_t;
 }
 extern "C" {
@@ -5226,7 +5351,8 @@ pub const HB_SUBSET_FLAGS_GLYPH_NAMES: hb_subset_flags_t = 128;
 pub const HB_SUBSET_FLAGS_NO_PRUNE_UNICODE_RANGES: hb_subset_flags_t = 256;
 pub const HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE: hb_subset_flags_t = 512;
 pub const HB_SUBSET_FLAGS_OPTIMIZE_IUP_DELTAS: hb_subset_flags_t = 1024;
-#[doc = " hb_subset_flags_t:\n @HB_SUBSET_FLAGS_DEFAULT: all flags at their default value of false.\n @HB_SUBSET_FLAGS_NO_HINTING: If set hinting instructions will be dropped in\n the produced subset. Otherwise hinting instructions will be retained.\n @HB_SUBSET_FLAGS_RETAIN_GIDS: If set glyph indices will not be modified in\n the produced subset. If glyphs are dropped their indices will be retained\n as an empty glyph.\n @HB_SUBSET_FLAGS_DESUBROUTINIZE: If set and subsetting a CFF font the\n subsetter will attempt to remove subroutines from the CFF glyphs.\n @HB_SUBSET_FLAGS_NAME_LEGACY: If set non-unicode name records will be\n retained in the subset.\n @HB_SUBSET_FLAGS_SET_OVERLAPS_FLAG:\tIf set the subsetter will set the\n OVERLAP_SIMPLE flag on each simple glyph.\n @HB_SUBSET_FLAGS_PASSTHROUGH_UNRECOGNIZED: If set the subsetter will not\n drop unrecognized tables and instead pass them through untouched.\n @HB_SUBSET_FLAGS_NOTDEF_OUTLINE: If set the notdef glyph outline will be\n retained in the final subset.\n @HB_SUBSET_FLAGS_GLYPH_NAMES: If set the PS glyph names will be retained\n in the final subset.\n @HB_SUBSET_FLAGS_NO_PRUNE_UNICODE_RANGES: If set then the unicode ranges in\n OS/2 will not be recalculated.\n @HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE: If set don't perform glyph closure on layout\n substitution rules (GSUB). Since: 7.2.0.\n @HB_SUBSET_FLAGS_OPTIMIZE_IUP_DELTAS: If set perform IUP delta optimization on the\n remaining gvar table's deltas. Since: 8.5.0\n @HB_SUBSET_FLAGS_IFTB_REQUIREMENTS: If set enforce requirements on the output subset\n to allow it to be used with incremental font transfer IFTB patches. Primarily,\n this forces all outline data to use long (32 bit) offsets. Since: EXPERIMENTAL\n\n List of boolean properties that can be configured on the subset input.\n\n Since: 2.9.0"]
+pub const HB_SUBSET_FLAGS_NO_BIDI_CLOSURE: hb_subset_flags_t = 2048;
+#[doc = " hb_subset_flags_t:\n @HB_SUBSET_FLAGS_DEFAULT: all flags at their default value of false.\n @HB_SUBSET_FLAGS_NO_HINTING: If set hinting instructions will be dropped in\n the produced subset. Otherwise hinting instructions will be retained.\n @HB_SUBSET_FLAGS_RETAIN_GIDS: If set glyph indices will not be modified in\n the produced subset. If glyphs are dropped their indices will be retained\n as an empty glyph.\n @HB_SUBSET_FLAGS_DESUBROUTINIZE: If set and subsetting a CFF font the\n subsetter will attempt to remove subroutines from the CFF glyphs.\n @HB_SUBSET_FLAGS_NAME_LEGACY: If set non-unicode name records will be\n retained in the subset.\n @HB_SUBSET_FLAGS_SET_OVERLAPS_FLAG:\tIf set the subsetter will set the\n OVERLAP_SIMPLE flag on each simple glyph.\n @HB_SUBSET_FLAGS_PASSTHROUGH_UNRECOGNIZED: If set the subsetter will not\n drop unrecognized tables and instead pass them through untouched.\n @HB_SUBSET_FLAGS_NOTDEF_OUTLINE: If set the notdef glyph outline will be\n retained in the final subset.\n @HB_SUBSET_FLAGS_GLYPH_NAMES: If set the PS glyph names will be retained\n in the final subset.\n @HB_SUBSET_FLAGS_NO_PRUNE_UNICODE_RANGES: If set then the unicode ranges in\n OS/2 will not be recalculated.\n @HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE: If set do not perform glyph closure on layout\n substitution rules (GSUB). Since: 7.2.0.\n @HB_SUBSET_FLAGS_OPTIMIZE_IUP_DELTAS: If set perform IUP delta optimization on the\n remaining gvar table's deltas. Since: 8.5.0\n @HB_SUBSET_FLAGS_NO_BIDI_CLOSURE: If set do not pull mirrored versions of input\n codepoints into the subset. Since: 11.1.0\n @HB_SUBSET_FLAGS_IFTB_REQUIREMENTS: If set enforce requirements on the output subset\n to allow it to be used with incremental font transfer IFTB patches. Primarily,\n this forces all outline data to use long (32 bit) offsets. Since: EXPERIMENTAL\n\n List of boolean properties that can be configured on the subset input.\n\n Since: 2.9.0"]
 pub type hb_subset_flags_t = ::std::os::raw::c_uint;
 pub const HB_SUBSET_SETS_GLYPH_INDEX: hb_subset_sets_t = 0;
 pub const HB_SUBSET_SETS_UNICODE: hb_subset_sets_t = 1;
@@ -5326,6 +5452,23 @@ extern "C" {
         axis_max_value: f32,
         axis_def_value: f32,
     ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_axis_range_from_string(
+        str_: *const ::std::os::raw::c_char,
+        len: ::std::os::raw::c_int,
+        axis_min_value: *mut f32,
+        axis_max_value: *mut f32,
+        axis_def_value: *mut f32,
+    ) -> hb_bool_t;
+}
+extern "C" {
+    pub fn hb_subset_axis_range_to_string(
+        input: *mut hb_subset_input_t,
+        axis_tag: hb_tag_t,
+        buf: *mut ::std::os::raw::c_char,
+        size: ::std::os::raw::c_uint,
+    );
 }
 extern "C" {
     pub fn hb_subset_preprocess(source: *mut hb_face_t) -> *mut hb_face_t;
