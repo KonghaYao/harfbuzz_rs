@@ -8,7 +8,8 @@ use crate::bindings::{
     hb_blob_t, hb_face_collect_unicodes, hb_face_create, hb_face_create_for_tables,
     hb_face_destroy, hb_face_get_empty, hb_face_get_glyph_count, hb_face_get_index,
     hb_face_get_upem, hb_face_reference, hb_face_reference_blob, hb_face_reference_table,
-    hb_face_set_glyph_count, hb_face_set_upem, hb_face_t, hb_set_create, hb_tag_t,
+    hb_face_set_glyph_count, hb_face_set_upem, hb_face_t, hb_ot_var_axis_info_t,
+    hb_ot_var_get_axis_count, hb_ot_var_get_axis_infos, hb_set_create, hb_tag_t,
 };
 use crate::blob::Blob;
 use crate::common::{HarfbuzzObject, Owned, Shared, Tag};
